@@ -10,5 +10,5 @@ p(s1|π)=Cat(s1|π)
 [Observation Model]
 p(xn|sn)=∏k=1KPoi(xn|λk)sn,k
 
-
+$$p({\bf S}, \boldsymbol\lambda, {\bf A}, \boldsymbol\pi)  \approx q({\bf S})q(\boldsymbol\lambda, {\bf A}, \boldsymbol\pi)$$
 p(S,λ,A,π)≈q(S)q(λ,A,π)
