@@ -3,7 +3,7 @@
 
 
 ## reference
-[My blog: gashin-learning.com](https://gashin-learning.hatenablog.com/entry/2019/08/28/154500)
+My blog: [gashin-learning.hatenablog.com/](https://gashin-learning.hatenablog.com/entry/2019/08/28/154500)
 
 
 ## notebook
