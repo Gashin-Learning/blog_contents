@@ -9,10 +9,12 @@
 <dl>
   <dt>observation model</dt>
   <img src="https://latex.codecogs.com/gif.latex?p(x_n|s_n)=\prod_{k&space;=&space;1}^{K}&space;Poi(x_n|\lambda_k)^{s_n,&space;k}$$\(\lambda_k\)">
+</dl>
 <dl>
   <dt>Structured Variational Inference</dt>
  <img src="https://latex.codecogs.com/gif.latex?p({\bf&space;S},&space;\boldsymbol\lambda,&space;{\bf&space;A},&space;\boldsymbol\pi)&space;\approx&space;q({\bf&space;S})q(\boldsymbol\lambda,&space;{\bf&space;A},&space;\boldsymbol\pi)">
 </dl>
+
 
 
 ## reference
