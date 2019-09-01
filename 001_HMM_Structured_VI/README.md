@@ -11,4 +11,8 @@
 
 ## libarary version
 
-puts 'numpy 1.16.4 \nscipy 1.3.0 \nmatplotlib 3.1.1'
+```
+ numpy 1.16.4
+ scipy 1.3.0 
+ matplotlib 3.1.1'
+```
