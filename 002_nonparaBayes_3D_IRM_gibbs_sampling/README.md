@@ -7,7 +7,7 @@
 
 
 ## notebook
-[here](https://github.com/Gashin-Learning/blog_contents/blob/master/001_HMM_Structured_VI/Comparison_between_HMM_structured_VI_and_PMM_VI.ipynb)
+[here](https://github.com/Gashin-Learning/blog_contents/blob/master/002_nonparaBayes_3D_IRM_gibbs_sampling/expriment_of_IRM_3D_gibs_sampling.ipynb)
 
 ## libarary version
 
