@@ -11,6 +11,10 @@
 #### Structured Variational Inference
 <img src="https://latex.codecogs.com/gif.latex?p({\bf&space;S},&space;\boldsymbol\lambda,&space;{\bf&space;A},&space;\boldsymbol\pi)&space;\approx&space;q({\bf&space;S})q(\boldsymbol\lambda,&space;{\bf&space;A},&space;\boldsymbol\pi)">
 
+<dl>
+  <dt>system model</dt>
+  <img src="https://latex.codecogs.com/gif.latex?p(s_n|s_{n-1},&space;{\bf&space;A})=\prod_{i&space;=&space;1}^{K}&space;Cat({\bf&space;s}_n|{\bf&space;A}_{:,i})^{s_{n-1},&space;i}">
+</dl>
 
 ## reference
 [My blog: gashin-learning.com](https://gashin-learning.hatenablog.com/entry/2019/08/25/222422)
