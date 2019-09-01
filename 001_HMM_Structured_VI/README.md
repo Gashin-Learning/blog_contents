@@ -1,10 +1,7 @@
 
 # Hidden Morkov Model Structured Variational Inference
 
-```math
-\p(s_n|s_{n-1}, {\bf A})=\prod_{i = 1}^{K} Cat({\bf s}_n|{\bf A}_{:,i})^{s_{n-1}, i}
-\p(s_1|\boldsymbol\pi)=Cat(s_1|\boldsymbol\pi)
-```
+<img src="https://latex.codecogs.com/gif.latex?p(s_n|s_{n-1},&space;{\bf&space;A})=\prod_{i&space;=&space;1}^{K}&space;Cat({\bf&space;s}_n|{\bf&space;A}_{:,i})^{s_{n-1},&space;i}">
 
 ## reference
 [My blog: gashin-learning.com](https://gashin-learning.hatenablog.com/entry/2019/08/25/222422)
