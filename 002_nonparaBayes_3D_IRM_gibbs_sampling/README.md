@@ -12,7 +12,9 @@ My blog: [gashin-learning.hatenablog.com/](https://gashin-learning.hatenablog.co
 ## libarary version
 
 ```
+ Python 3.6
  numpy 1.16.4
  scipy 1.3.0 
- matplotlib 3.1.1'
+ matplotlib 3.1.1
+ seaborn 0.9.0
 ```
