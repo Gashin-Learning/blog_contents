@@ -100,6 +100,7 @@ def posterier_theta(s1, s2, s3,  R, a, b):
     theta=a_update/(a_update + b_update)
     return theta
 
+# log P(R|sx, sy, sz) marginalize parameter
 def log_R_probability(s1, s2, s3,  R, a, b):
 
     sorted_s1_index = s1.argsort()
@@ -114,6 +115,21 @@ def log_R_probability(s1, s2, s3,  R, a, b):
     a_update = a + R_ijk_1
     b_update = b + R_ijk_0
     return np.sum(betaln(a_update, b_update)-betaln(a,b))
+
+# log P(R|theta, sx, sy, sz)
+def log_R_theta_probability(s1, s2, s3,  R, theta):
+
+    sorted_s1_index = s1.argsort()
+    sorted_s2_index = s2.argsort()
+    sorted_s3_index = s3.argsort()
+    sorted_s1 = s1[sorted_s1_index]
+    sorted_s2 = s2[sorted_s2_index]
+    sorted_s3 = s3[sorted_s3_index]
+    R_sorted = R[sorted_s1_index,:,:][:,sorted_s2_index,:][:,:,sorted_s3_index]
+
+    R_ijk_1, R_ijk_0 = count_one_zero_3D(R_sorted, sorted_s1, sorted_s2, sorted_s3)
+
+    return np.sum(R_ijk_1 * np.log(theta))+ np.sum(R_ijk_0 * np.log(1-theta))
 
 
 # update s
@@ -185,6 +201,7 @@ def predict_S(R, alpha,a,b, iter_num=500, reset_iter_num=100):
     ##############################################
 
     max_v = -np.inf
+    # to recycle 'def s_update'
     R_transpose_y = R.transpose((1,2,0))
     R_transpose_z = R.transpose((2,0,1))
 
@@ -195,14 +212,16 @@ def predict_S(R, alpha,a,b, iter_num=500, reset_iter_num=100):
         sy, theta = s_update(sy, sz, sx, theta, R_transpose_y, a, b, alpha, axis=1)
         sz, theta = s_update(sz, sx, sy, theta, R_transpose_z, a, b, alpha, axis=2)
 
-        # probability s1 s2 s3 of posterior distribution
         log_p_sx = np.log(Ewens_sampling_formula(sx, alpha))
         log_p_sy = np.log(Ewens_sampling_formula(sy, alpha))
         log_p_sz = np.log(Ewens_sampling_formula(sz, alpha))
-        log_p_R_kl_new = log_R_probability(sx, sy, sz,  R, a, b)
         log_p_theta = np.sum(st.beta.logpdf(theta, a,b))
 
-        v = log_p_R_kl_new + log_p_sx + log_p_sy + log_p_sz + log_p_theta
+        log_p_R_theta = log_R_theta_probability(sx, sy, sz,  R, theta)
+        #log_p_R_ijk = log_R_probability(sx, sy, sz,  R, a, b)
+
+        # logP(sx, sy, sz, theta| R)
+        v = log_p_sx + log_p_sy + log_p_sz + log_p_theta + log_p_R_theta
 
         # update if over max
         if v > max_v:
@@ -211,8 +230,9 @@ def predict_S(R, alpha,a,b, iter_num=500, reset_iter_num=100):
             max_sy = sy
             max_sz = sz
             max_theta = theta
-            print("  update S", v)
+            print("  update S and theta : logP(sx, sy, sz, theta| R) = ", v)
 
+        # to prevent getting stuck local minima, reset S and theta
         if t%reset_iter_num==0:
             sx = CRP(alpha=alpha, sample_num=X)
             sy = CRP(alpha=alpha, sample_num=Y)
