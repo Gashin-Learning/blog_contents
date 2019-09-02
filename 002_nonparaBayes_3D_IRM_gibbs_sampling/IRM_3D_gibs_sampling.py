@@ -8,8 +8,7 @@ from functools import reduce
 from operator import mul
 
 # chinese restaurant process
-def CRP(alpha, sample_num, my_seed=0):
-    np.random.seed(my_seed)
+def CRP(alpha, sample_num):
     s = [0]
     for _ in range(sample_num-1):
         n = len(s)
@@ -190,16 +189,14 @@ def s_update(s1, s2, s3, theta, R, a, b, alpha, axis):
 
 
 # gibbs sampling
-def predict_S(R, alpha,a,b, iter_num=500, reset_iter_num=100, my_seed=0):
-
-    np.random.seed(my_seed)
+def predict_S(R, alpha,a,b, iter_num=500, reset_iter_num=100):
 
     X, Y, Z = R.shape
 
     # set first values  ##########################
-    sx = CRP(alpha=alpha, sample_num=X, my_seed)
-    sy = CRP(alpha=alpha, sample_num=Y, my_seed)
-    sz = CRP(alpha=alpha, sample_num=Z, my_seed)
+    sx = CRP(alpha=alpha, sample_num=X)
+    sy = CRP(alpha=alpha, sample_num=Y)
+    sz = CRP(alpha=alpha, sample_num=Z)
     theta = posterier_theta(sx, sy, sz, R, a, b)
     ##############################################
 
@@ -237,9 +234,9 @@ def predict_S(R, alpha,a,b, iter_num=500, reset_iter_num=100, my_seed=0):
 
         # to prevent getting stuck local minima, reset S and theta
         if t%reset_iter_num==0:
-            sx = CRP(alpha=alpha, sample_num=X, my_seed)
-            sy = CRP(alpha=alpha, sample_num=Y, my_seed)
-            sz = CRP(alpha=alpha, sample_num=Z, my_seed)
+            sx = CRP(alpha=alpha, sample_num=X)
+            sy = CRP(alpha=alpha, sample_num=Y)
+            sz = CRP(alpha=alpha, sample_num=Z)
             theta = posterier_theta(sx, sy, sz, R, a, b)
 
     return max_sx, max_sy, max_sz, max_theta
