@@ -45,7 +45,7 @@ def count_n_ijk(s1, s2, s3):
         num_n_ijk_matrix[i, j, k] = num_ijk
     return num_n_ijk_matrix
 
-# count num of 1 and 0 per cluster categorys in R_3Dmatrix
+# count num of 1 and 0 per cluster categorys in R_2Dmatrix conditioned one axis
 def count_one_zero_2D(R_per_sorted, sorted_s_first, sorted_s_second):
 
     switch_s_first_id = np.hstack([np.array([0]), np.diff(sorted_s_first)])
@@ -55,20 +55,35 @@ def count_one_zero_2D(R_per_sorted, sorted_s_first, sorted_s_second):
 
     sum_one_across_an_axis = np.add.reduceat(R_per_sorted, switch_s_first_idx, axis=0)
     R_ijk_1 = np.add.reduceat(sum_one_across_an_axis, switch_s_second_idx, axis=1)
-
     sum_all_across_an_axis = np.add.reduceat(np.ones(shape=R_per_sorted.shape), switch_s_first_idx, axis=0)
     R_ijk_all = np.add.reduceat(sum_all_across_an_axis, switch_s_second_idx, axis=1)
 
     R_ijk_0 = R_ijk_all - R_ijk_1
+    return R_ijk_1, R_ijk_0
 
+# count num of 1 and 0 per cluster categorys in R_3Dmatrix
+def count_one_zero_3D(R_per_sorted, sorted_s_first, sorted_s_second, sorted_s_third):
+
+    switch_s_first_id = np.hstack([np.array([0]), np.diff(sorted_s_first)])
+    switch_s_second_id = np.hstack([np.array([0]), np.diff(sorted_s_second)])
+    switch_s_third_id = np.hstack([np.array([0]), np.diff(sorted_s_third)])
+    switch_s_first_idx = np.hstack([np.array([0]), np.where(switch_s_first_id==1)[0]])
+    switch_s_second_idx = np.hstack([np.array([0]), np.where(switch_s_second_id==1)[0]])
+    switch_s_third_idx = np.hstack([np.array([0]), np.where(switch_s_third_id==1)[0]])
+
+    sum_one_across_an_axis = np.add.reduceat(R_per_sorted, switch_s_first_idx, axis=0)
+    sum_one_across_two_axes = np.add.reduceat(sum_one_across_an_axis, switch_s_second_idx, axis=1)
+    R_ijk_1 = np.add.reduceat(sum_one_across_two_axes, switch_s_third_idx, axis=2)
+    sum_all_across_an_axis = np.add.reduceat(np.ones(shape=R_per_sorted.shape), switch_s_first_idx, axis=0)
+    sum_all_across_two_axes = np.add.reduceat(sum_all_across_an_axis, switch_s_second_idx, axis=1)
+    R_ijk_all = np.add.reduceat(sum_all_across_two_axes, switch_s_third_idx, axis=2)
+
+    R_ijk_0 = R_ijk_all - R_ijk_1
     return R_ijk_1, R_ijk_0
 
 # calculate bernouli parameter as the mean of beta posterior distribution
 # return mean
 def posterier_theta(s1, s2, s3,  R, a, b):
-
-    a_update = np.zeros((max(s1)+1, max(s2)+1, max(s3)+1))
-    b_update = np.zeros((max(s1)+1, max(s2)+1, max(s3)+1))
 
     sorted_s1_index = s1.argsort()
     sorted_s2_index = s2.argsort()
@@ -78,25 +93,27 @@ def posterier_theta(s1, s2, s3,  R, a, b):
     sorted_s3 = s3[sorted_s3_index]
     R_sorted = R[sorted_s1_index,:,:][:,sorted_s2_index,:][:,:,sorted_s3_index]
 
-    switch_s1_id = np.hstack([np.array([0]), np.diff(sorted_s1)])
-    switch_s2_id = np.hstack([np.array([0]), np.diff(sorted_s2)])
-    switch_s3_id = np.hstack([np.array([0]), np.diff(sorted_s3)])
-    switch_s1_idx = np.hstack([np.array([0]), np.where(switch_s1_id==1)[0]])
-    switch_s2_idx = np.hstack([np.array([0]), np.where(switch_s2_id==1)[0]])
-    switch_s3_idx = np.hstack([np.array([0]), np.where(switch_s3_id==1)[0]])
-
-    sum_across_x = np.add.reduceat(R_sorted, switch_s1_idx, axis=0)
-    sum_across_y = np.add.reduceat(sum_across_x, switch_s2_idx, axis=1)
-    R_ijk_1 = np.add.reduceat(sum_across_y, switch_s3_idx, axis=2)
-
-    sum_across_x_all = np.add.reduceat(np.ones(shape=R_sorted.shape), switch_s1_idx, axis=0)
-    sum_across_y_all = np.add.reduceat(sum_across_x_all, switch_s2_idx, axis=1)
-    R_ijk_all = np.add.reduceat(sum_across_y_all, switch_s3_idx, axis=2)
+    R_ijk_1, R_ijk_0 = count_one_zero_3D(R_sorted, sorted_s1, sorted_s2, sorted_s3)
 
     a_update = a + R_ijk_1
-    b_update = b + R_ijk_all - R_ijk_1
+    b_update = b + R_ijk_0
     theta=a_update/(a_update + b_update)
     return theta
+
+def log_R_probability(s1, s2, s3,  R, a, b):
+
+    sorted_s1_index = s1.argsort()
+    sorted_s2_index = s2.argsort()
+    sorted_s3_index = s3.argsort()
+    sorted_s1 = s1[sorted_s1_index]
+    sorted_s2 = s2[sorted_s2_index]
+    sorted_s3 = s3[sorted_s3_index]
+    R_sorted = R[sorted_s1_index,:,:][:,sorted_s2_index,:][:,:,sorted_s3_index]
+
+    R_ijk_1, R_ijk_0 = count_one_zero_3D(R_sorted, sorted_s1, sorted_s2, sorted_s3)
+    a_update = a + R_ijk_1
+    b_update = b + R_ijk_0
+    return np.sum(betaln(a_update, b_update)-betaln(a,b))
 
 
 # update s
@@ -106,7 +123,6 @@ def s_update(s1, s2, s3, theta, R, a, b, alpha, axis):
         theta = theta.transpose((1,2,0))
     elif axis==2:
         theta = theta.transpose((2,0,1))
-
     # sort orderby s2,s3 for easy calculation
     sorted_s2_index = s2.argsort()
     sorted_s3_index = s3.argsort()
@@ -157,7 +173,7 @@ def s_update(s1, s2, s3, theta, R, a, b, alpha, axis):
 
 
 # gibbs sampling
-def predict_S(R, alpha,a,b, iter_num=500):
+def predict_S(R, alpha,a,b, iter_num=500, reset_iter_num=100):
 
     X, Y, Z = R.shape
 
@@ -179,30 +195,28 @@ def predict_S(R, alpha,a,b, iter_num=500):
         sy, theta = s_update(sy, sz, sx, theta, R_transpose_y, a, b, alpha, axis=1)
         sz, theta = s_update(sz, sx, sy, theta, R_transpose_z, a, b, alpha, axis=2)
 
+        # probability s1 s2 s3 of posterior distribution
         log_p_sx = np.log(Ewens_sampling_formula(sx, alpha))
         log_p_sy = np.log(Ewens_sampling_formula(sy, alpha))
         log_p_sz = np.log(Ewens_sampling_formula(sz, alpha))
-
-        log_p_R_kl_new=0
-        for i in range(len(np.unique(sx))):
-            for j in range(len(np.unique(sy))):
-                for k in range(len(np.unique(sz))):
-                    R_ijk = R[sx==i, :, :][:,sy==j,:][:,:,sz==k]
-                    n_l_ijk = np.sum(R_ijk)
-                    n_l_ijk_bar = R_ijk.size - n_l_ijk
-                    log_p_R_kl_new += betaln(n_l_ijk+a, n_l_ijk_bar+b)-betaln(a,b)
-
+        log_p_R_kl_new = log_R_probability(sx, sy, sz,  R, a, b)
         log_p_theta = np.sum(st.beta.logpdf(theta, a,b))
 
-        # probability s1 s2 s3 of posterior distribution
         v = log_p_R_kl_new + log_p_sx + log_p_sy + log_p_sz + log_p_theta
 
         # update if over max
-        if v>max_v:
+        if v > max_v:
             max_v = v
             max_sx = sx
             max_sy = sy
             max_sz = sz
             max_theta = theta
             print("  update S", v)
+
+        if t%reset_iter_num==0:
+            sx = CRP(alpha=alpha, sample_num=X)
+            sy = CRP(alpha=alpha, sample_num=Y)
+            sz = CRP(alpha=alpha, sample_num=Z)
+            theta = posterier_theta(sx, sy, sz, R, a, b)
+
     return max_sx, max_sy, max_sz, max_theta
