@@ -1,5 +1,5 @@
 
-# Hidden Morkov Model Structured Variational Inference
+# Hidden Morkov Model by Structured Variational Inference
 
 
 ## model and inference
