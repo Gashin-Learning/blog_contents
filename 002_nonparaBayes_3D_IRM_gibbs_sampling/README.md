@@ -1,6 +1,7 @@
 
 # Infinite Relational Models 3D-customized inferenced by gibbs sampling(MCMC)
 
+<img src=https://cdn-ak.f.st-hatena.com/images/fotolife/g/gashin_learning/20190906/20190906205605.png>
 
 ## reference
 My blog: [gashin-learning.hatenablog.com/](https://gashin-learning.hatenablog.com/entry/2019/08/28/154500)
