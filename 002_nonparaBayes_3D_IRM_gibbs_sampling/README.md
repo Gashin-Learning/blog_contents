@@ -19,3 +19,5 @@ My blog: [gashin-learning.hatenablog.com/](https://gashin-learning.hatenablog.co
  matplotlib 3.1.1
  seaborn 0.9.0
 ```
+## license
+MIT
