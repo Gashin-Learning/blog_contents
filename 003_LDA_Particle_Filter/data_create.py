@@ -1,7 +1,6 @@
 import numpy as np
 from sklearn.datasets import fetch_20newsgroups
 from sklearn.feature_extraction.text import CountVectorizer
-import pickle
 
 import nltk
 # Please download for pos_tag
