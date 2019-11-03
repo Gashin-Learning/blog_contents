@@ -5,5 +5,6 @@
 ```
 001_HMM_Structured_VI
 002_nonparaByaes_3D-IRM_gibbs_sampling
+003_LDA_Particle_Filter
 ```
 
