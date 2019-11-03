@@ -16,8 +16,10 @@ My blog: [gashin-learning.hatenablog.com/](https://gashin-learning.hatenablog.co
 ```
  Python 3.6
  numpy 1.16.4
- numba
+ numba 0.45.1
  matplotlib 3.1.1
+ sklearn 0.21.2
+ wordcloud 1.5.0
 ```
 
 
