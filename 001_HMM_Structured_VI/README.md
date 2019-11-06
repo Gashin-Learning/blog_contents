@@ -1,6 +1,7 @@
 
 # Hidden Morkov Model by Structured Variational Inference
 
+<img src=https://cdn-ak.f.st-hatena.com/images/fotolife/g/gashin_learning/20190828/20190828155130.png>
 
 ## model and inference
 <dl>
